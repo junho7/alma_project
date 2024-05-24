@@ -1,19 +1,20 @@
-from fastapi import APIRouter, Form, Path, Depends, status
-from fastapi.exceptions import HTTPException
-from app.utils.auth import get_current_user
 from bson import ObjectId
-from pydantic import BaseModel, EmailStr, Field
-from app.utils.email_utils import send_confirmation_email
+from fastapi import APIRouter, Depends, File, Form, Path, UploadFile
+from fastapi.exceptions import HTTPException
+from pydantic import BaseModel, EmailStr
 from app.models.database import leads_collection
+from app.utils.auth import get_current_user
+from app.utils.email_utils import send_confirmation_email
 
 router = APIRouter()
 
+
 # Form Data Validation
 class LeadForm(BaseModel):
-    first_name: str = Field(..., max_length=50)
-    last_name: str = Field(..., max_length=50)
-    email: EmailStr
-    resume: str = Field(..., max_length=1000)
+    first_name: str = Form(...)
+    last_name: str = Form(...)
+    email: EmailStr = Form(...)
+    resume: UploadFile = File(...)
 
 
 # API Endpoint to Handle Form Submission
@@ -22,25 +23,24 @@ async def submit_lead(
     first_name: str = Form(...),
     last_name: str = Form(...),
     email: EmailStr = Form(...),
-    resume: str = Form(...),
-):
-    # Validate Form Data
-    lead_data = LeadForm(
-        first_name=first_name, last_name=last_name, email=email, resume=resume
-    )
+    resume: UploadFile = File(...)
+    ):
+    contents = await resume.read()
+    filename = resume.filename
 
     # Store Data in MongoDB
     document = {
-        "first_name": lead_data.first_name,
-        "last_name": lead_data.last_name,
-        "email": lead_data.email,
-        "resume": lead_data.resume,
+        "first_name": first_name,
+        "last_name": last_name,
+        "email": email,
+        "resume_filename": filename,
+        "resume_contents": contents,
         "state": "PENDING",
     }
     await leads_collection.insert_one(document)
 
     # Send Confirmation Email
-    send_confirmation_email(lead_data)
+    send_confirmation_email(document)
 
     return {"message": "Resume submitted successfully"}
 
@@ -52,7 +52,8 @@ async def get_all_leads():
         lead["_id"] = str(lead["_id"])
         leads.append(lead)
     return {"leads": leads}
-  
+
+
 @router.put("/reach_out/{lead_id}", dependencies=[Depends(get_current_user)])
 async def reach_out_to_lead(
     lead_id: str = Path(...),

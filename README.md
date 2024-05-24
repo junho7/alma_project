@@ -3,10 +3,7 @@
 0. Set up pyenv and pipenv with python 3.12.0
 1. `pipenv shell`
 2. `pipenv install`
-3. Launch SMTP server to test email feature
-- `python3 smtp_server.py`
-- You can see the confirmation email is printed in this console when you submit a new lead
-4. `fastapi run`
+3. `fastapi run`
 
 ## Test
 
@@ -16,13 +13,16 @@
 - collections: users, leads
 - If your MongoDB has different url than `mongodb://localhost:27017`, you need to specify it in `.env`
 - Here is a sample `.env`
+- SMTP should use SSL
 ```
-ADMIN_EMAIL_ADDRESS=admin@alma.com
-ATTORNEY_EMAIL_ADDRESS=attorney@alma.com
+SENDER_EMAIL=test@test.com
+ATTORNEY_EMAIL=attorney@test.com
 SECRET_KEY=W@ueKuV+diK]M|%*7nzzhm+Ap4N&uBz!%.,lDPwbho[Ut/:ZjNVHRl/<DKU#4s!
 DATABASE_URL=mongodb://localhost:27017
-SMTP_URL=localhost
-SMTP_PORT=8025
+SMTP_SERVER_URL=smtp.mail.yahoo.com
+SMTP_SERVER_PORT=465
+SMTP_USERNAME=test@yahoo.com
+SMTP_APP_PASSWORD=YOUR_APP_PASSWORD
 ```
 1. Signup to test Auth
 - In Postman, `POST http://127.0.0.1:8000/signup`
@@ -53,34 +53,7 @@ last_name:Doe
 email:test@email.com
 resume:Fullstack engineer
 ```
-- When you submit the request, you can see the email request is printed on SMTP server you launched above 
-- Here is a sample message printed
-```
-Message data:
- Content-Type: multipart/mixed; boundary="===============7219657247909981784=="
-MIME-Version: 1.0
-From: admin@alma.com
-To: test@email.com, attorney@alma.com
-Subject: Lead Submission Confirmation
-
---===============7219657247909981784==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-Dear John,
-
-Thank you for submitting your form.
-
-First name: John
-Last name: Doe
-email: test@email.com
-Resume/CV: Fullstack engineer
-
-Sincerely,
-The Alma Team
---===============7219657247909981784==--
-```
+- When you submit the request, you will get the email. 
 
 ### How to test `Getting leads`
 - In Postman, `GET http://127.0.0.1:8000/get_leads`

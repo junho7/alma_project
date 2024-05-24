@@ -1,14 +1,15 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    ADMIN_EMAIL_ADDRESS: str
-    ATTORNEY_EMAIL_ADDRESS: str
+    model_config = SettingsConfigDict(env_file=".env")
+
+    SENDER_EMAIL: str
+    ATTORNEY_EMAIL: str
     SECRET_KEY: str
     DATABASE_URL: str
-    SMTP_URL: str
-    SMTP_PORT: int
+    SMTP_SERVER_URL: str
+    SMTP_SERVER_PORT: int
+    SMTP_USERNAME: str
+    SMTP_APP_PASSWORD: str
 
-    class Config:
-        env_file = ".env"  # Load environment variables from .env file
-
-settings = Settings()
+settings = Settings(_env_file=".env")
