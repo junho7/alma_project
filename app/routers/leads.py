@@ -1,3 +1,4 @@
+import base64
 from bson import ObjectId
 from fastapi import APIRouter, Depends, File, Form, Path, UploadFile
 from fastapi.exceptions import HTTPException
@@ -50,6 +51,8 @@ async def get_all_leads():
     leads = []
     async for lead in leads_collection.find():
         lead["_id"] = str(lead["_id"])
+        if "resume_contents" in lead:
+            lead["resume_contents"] = base64.b64encode(lead["resume_contents"]).decode() # Encode as Base64
         leads.append(lead)
     return {"leads": leads}
 

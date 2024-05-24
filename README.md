@@ -51,7 +51,7 @@ password:random_password
 first_name:John
 last_name:Doe
 email:test@email.com
-resume:Fullstack engineer
+resume: Pick file
 ```
 - When you submit the request, you will get the email. 
 
@@ -68,7 +68,9 @@ resume:Fullstack engineer
             "first_name": "John",
             "last_name": "Doe",
             "email": "test@email.com",
-            "resume": "Fullstack engineer"
+            "state": "PENDING",
+            "resume_filename": "Resume_JunhoPark_SWE_2024_v1.pdf",
+            "resume_contents": "JVBERi0xLjQKJdPr6eEKMSAwIG9iago8PC9UaXRsZSAoUmVzdW1lX0p1bmhvUGFya19TV0VfMjAyNF92MSkKL1Byb2R1Y2VyIChTa2lhL1BERiBtMTI1IEdvb2dsZSBEb2NzIFJlbmRlcmVyKT4+CmVuZG9iagozIDAgb2JqCjw8L2NhIDEKL0JNIC9Ob3JtYWw+PgplbmRvYmoKOSAwIG9iago8PC9DQSAxCi9jYSAxCi9MQyAwCi9MSiAwCi9MVyAxLjMzMzMzMzM3Ci9NTCAxMAovU0EgdHJ1ZQovQk0gL05vcm1hbD4..."
         },
 ```
 
